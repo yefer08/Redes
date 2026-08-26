@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Gestión | API Local</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-glow"></div>
+    
+    <main class="container">
+        <header class="header">
+            <div class="badge">
+                <span class="status-dot"></span> API REST Conectada (SQLite)
+            </div>
+            <h1>Panel de Control</h1>
+            <p class="subtitle">Gestión de registros locales en tiempo real</p>
+        </header>
+
+        <!-- Formulario de Inserción -->
+        <section class="card">
+            <div class="card-header">
+                <i data-lucide="plus-circle" class="icon"></i>
+                <h2>Nuevo Registro</h2>
+            </div>
+            <form id="itemForm">
+                <div class="input-group">
+                    <label for="nombre">Nombre del item</label>
+                    <input type="text" id="nombre" placeholder="Ej: Implementar JWT" required autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label for="descripcion">Descripción</label>
+                    <input type="text" id="descripcion" placeholder="Ej: Añadir autenticación por tokens al backend" autocomplete="off">
+                </div>
+                <button type="submit" id="submitBtn">
+                    <span>Guardar Registro</span>
+                    <i data-lucide="arrow-right" class="btn-icon"></i>
+                </button>
+            </form>
+        </section>
+
+        <!-- Lista de Elementos -->
+        <section class="card">
+            <div class="card-header">
+                <i data-lucide="layers" class="icon"></i>
+                <h2>Registros de la BD</h2>
+                <span id="counter" class="count-badge">0</span>
+            </div>
+            <ul id="itemsList"></ul>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        // Inicializa los íconos de Lucide
+        lucide.createIcons();
+    </script>
+</body>
+</html>
