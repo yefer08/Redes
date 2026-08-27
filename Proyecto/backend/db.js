@@ -1,18 +1,14 @@
-const { Pool } = require('pg');
+const mysql = require('mysql2/promise');
 
-// Configuración de la conexión a tu PostgreSQL local
-const pool = new Pool({
-    user: 'postgres',          // Tu usuario de PostgreSQL (por defecto 'postgres')
-    host: 'localhost',
-    database: 'mi_base_datos', // Nombre de la BD creada
-    password: 'tu_password',   // Pon aquí tu contraseña local de PostgreSQL
-    port: 5432,                // Puerto por defecto de PostgreSQL
+const pool = mysql.createPool({
+    host: '127.0.0.1',        // Usa '127.0.0.1' en lugar de 'localhost'
+    user: 'root',             // Tu usuario de MySQL
+    password: '123456789',    // La contraseña que usas para entrar
+    database: 'mi_base_datos',
+    port: 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
-pool.on('connect', () => {
-    console.log('Conectado a la base de datos PostgreSQL.');
-});
-
-module.exports = {
-    query: (text, params) => pool.query(text, params),
-};
+module.exports = pool;
