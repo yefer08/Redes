@@ -3,64 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Gestión | API Local</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>Telemática & Network Operations Center (NOC)</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="background-glow"></div>
-    
-    <main class="container">
-        <header class="header">
-            <div class="badge">
-                <span class="status-dot"></span> API REST Conectada (SQLite)
+    <!-- FONDOS CON GLOW AMBIENTAL TELEMÁTICO -->
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <div class="app-wrapper">
+        <!-- TOP NAVIGATION BAR -->
+        <header class="navbar">
+            <div class="brand-container">
+                <div class="pulse-icon">📡</div>
+                <div>
+                    <h1>NOC COMMAND CENTER <span class="badge-tag">TELEMATICS V3</span></h1>
+                    <p class="brand-sub">Sistema de Infraestructura Distribuida sobre Modelo OSI & TCP/IP</p>
+                </div>
             </div>
-            <h1>Panel de Control</h1>
-            <p class="subtitle">Gestión de registros locales en tiempo real</p>
+            
+            <div class="server-status-widget">
+                <div class="status-indicator online" id="statusDot"></div>
+                <div class="status-info">
+                    <span class="status-title" id="statusTitle">CANAL ACTIVO</span>
+                    <span class="status-sub" id="statusPort">TCP PORT: 3000</span>
+                </div>
+            </div>
         </header>
 
-        <!-- Formulario de Inserción -->
-        <section class="card">
-            <div class="card-header">
-                <i data-lucide="plus-circle" class="icon"></i>
-                <h2>Nuevo Registro</h2>
+        <!-- DASHBOARD HERO METRICS (TELEMETRÍA EN TIEMPO REAL) -->
+        <section class="hero-metrics">
+            <div class="metric-box glowing-border">
+                <span class="m-label">CAPA 7 OSI</span>
+                <strong class="m-value">HTTP/1.1 REST</strong>
+                <span class="m-sub">Payload: JSON</span>
             </div>
-            <form id="itemForm">
-                <div class="input-group">
-                    <label for="nombre">Nombre del item</label>
-                    <input type="text" id="nombre" placeholder="Ej: Implementar JWT" required autocomplete="off">
-                </div>
-                <div class="input-group">
-                    <label for="descripcion">Descripción</label>
-                    <input type="text" id="descripcion" placeholder="Ej: Añadir autenticación por tokens al backend" autocomplete="off">
-                </div>
-                <button type="submit" id="submitBtn">
-                    <span>Guardar Registro</span>
-                    <i data-lucide="arrow-right" class="btn-icon"></i>
-                </button>
-            </form>
+            <div class="metric-box">
+                <span class="m-label">SOCKET DE TRANSPORTE</span>
+                <strong class="m-value">TCP / IP</strong>
+                <span class="m-sub">Control de Flujo</span>
+            </div>
+            <div class="metric-box glowing-cyan">
+                <span class="m-label">LATENCIA RTT (PING)</span>
+                <strong class="m-value" id="latencyVal">0 <small>ms</small></strong>
+                <span class="m-sub" id="channelQuality">Calculando canal...</span>
+            </div>
+            <div class="metric-box">
+                <span class="m-label">DATABASE CLUSTER</span>
+                <strong class="m-value">3306 <small>MYSQL</small></strong>
+                <span class="m-sub">Pool Connection</span>
+            </div>
         </section>
 
-        <!-- Lista de Elementos -->
-        <section class="card">
-            <div class="card-header">
-                <i data-lucide="layers" class="icon"></i>
-                <h2>Registros de la BD</h2>
-                <span id="counter" class="count-badge">0</span>
+        <!-- PESTAÑAS DE NAVEGACIÓN PRINCIPALES -->
+        <nav class="tabs-bar">
+            <button class="tab-btn active" onclick="switchTab('crud-panel')">⚙️ Módulo 1: CRUD & Nodos LAN</button>
+            <button class="tab-btn" onclick="switchTab('osi-panel')">🌐 Módulo 2: Modelo OSI & Arquitectura</button>
+        </nav>
+
+        <!-- SECCIÓN 1: FUNCIONALIDAD 1 - GESTIÓN CRUD DE NODOS -->
+        <main id="crud-panel" class="tab-content active">
+            <div class="grid-2col">
+                <!-- FORMULARIO DE REGISTRO -->
+                <div class="glass-card">
+                    <div class="card-head">
+                        <h3>⚡ Registrar Nodo de Red / Dispositivo</h3>
+                        <p>Agregar una nueva entidad a la base de datos relacional MySQL via HTTP POST</p>
+                    </div>
+                    <form id="itemForm">
+                        <div class="input-field">
+                            <label>Nombre del Nodo / Dispositivo</label>
+                            <input type="text" id="nombre" required placeholder="Ej. Gateway Principal IPv4">
+                        </div>
+                        <div class="input-field">
+                            <label>Configuración de Red / Parámetros</label>
+                            <textarea id="descripcion" rows="3" placeholder="Ej. Subred 192.168.1.0/24 - Interface eth0 - VLAN 20"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <span>Enviar Paquete HTTP POST</span> ➔
+                        </button>
+                    </form>
+                </div>
+
+                <!-- LISTA DE NODOS ALMACENADOS -->
+                <div class="glass-card">
+                    <div class="card-head space-between">
+                        <div>
+                            <h3>📋 Nodos de Red Activos</h3>
+                            <p>Consulta en tiempo real vía HTTP GET</p>
+                        </div>
+                        <span class="counter-badge" id="counter">0 Nodos</span>
+                    </div>
+                    <div id="itemsList" class="nodes-container">
+                        <!-- Carga dinámica via JavaScript -->
+                    </div>
+                </div>
             </div>
-            <ul id="itemsList"></ul>
+        </main>
+
+        <!-- SECCIÓN 2: FUNCIONALIDAD 2 - MODELO OSI Y ARQUITECTURA -->
+        <section id="osi-panel" class="tab-content">
+            <div class="glass-card">
+                <div class="card-head">
+                    <h3>🌐 Mapeo del Modelo OSI en la Aplicación Telemática</h3>
+                    <p>Desglose de la pila de protocolos implementada en el sistema</p>
+                </div>
+                
+                <div class="osi-stack">
+                    <div class="osi-layer l7">
+                        <span class="l-num">Capa 7</span>
+                        <span class="l-name">Aplicación</span>
+                        <span class="l-desc">Interfaz Web (HTML/CSS/JS) y API RESTful exponiendo endpoints HTTP.</span>
+                    </div>
+                    <div class="osi-layer l6">
+                        <span class="l-num">Capa 6</span>
+                        <span class="l-name">Presentación</span>
+                        <span class="l-desc">Formateo de datos JSON y codificación UTF-8 en peticiones y respuestas.</span>
+                    </div>
+                    <div class="osi-layer l5">
+                        <span class="l-num">Capa 5</span>
+                        <span class="l-name">Sesión</span>
+                        <span class="l-desc">Gestión de conexiones continuas mediante el Pool de MySQL (`mysql2`).</span>
+                    </div>
+                    <div class="osi-layer l4">
+                        <span class="l-num">Capa 4</span>
+                        <span class="l-name">Transporte</span>
+                        <span class="l-desc">Sockets TCP de confiabilidad garantizada sobre Puertos 3000 (Express) y 3306 (MySQL).</span>
+                    </div>
+                    <div class="osi-layer l3">
+                        <span class="l-num">Capa 3</span>
+                        <span class="l-name">Red</span>
+                        <span class="l-desc">Direccionamiento por protocolo IPv4 (`192.168.X.X` / `127.0.0.1`) para transmisión LAN.</span>
+                    </div>
+                    <div class="osi-layer l2">
+                        <span class="l-num">Capa 2</span>
+                        <span class="l-name">Enlace de Datos</span>
+                        <span class="l-desc">Tramas Ethernet / Wi-Fi (IEEE 802.11) con direccionamiento MAC de interfaz local.</span>
+                    </div>
+                    <div class="osi-layer l1">
+                        <span class="l-num">Capa 1</span>
+                        <span class="l-name">Física</span>
+                        <span class="l-desc">Transmisión de impulsos eléctricos (UTP) y radiofrecuencia (Wi-Fi 2.4/5GHz).</span>
+                    </div>
+                </div>
+            </div>
         </section>
-    </main>
+    </div>
+
+    <!-- MODAL DE EDICIÓN PROFESIONAL -->
+    <div class="modal-backdrop" id="editModal">
+        <div class="modal-box glass-card">
+            <div class="card-head space-between">
+                <h3>✏️ Editar Parámetros de Nodo</h3>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="editId">
+                <div class="input-field">
+                    <label>Nombre del Dispositivo</label>
+                    <input type="text" id="editNombre" required>
+                </div>
+                <div class="input-field">
+                    <label>Configuración / Parámetros</label>
+                    <textarea id="editDescripcion" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Actualizar Registro (PUT)</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="app.js"></script>
-    <script>
-        // Inicializa los íconos de Lucide
-        lucide.createIcons();
-    </script>
 </body>
 </html>

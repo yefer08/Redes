@@ -1,114 +1,176 @@
-const API_URL = 'http://localhost:3000/items';
+// DIRECCIÓN IP DEL SERVIDOR DE TELEMÁTICA
+const API_URL = 'http://localhost:3000';
 
 document.addEventListener('DOMContentLoaded', () => {
     obtenerItems();
+    iniciarTelemetria();
 });
 
-// --- LEER (READ) ---
-async function obtenerItems() {
-    const list = document.getElementById('itemsList');
-    const counter = document.getElementById('counter');
+// NAVEGACIÓN POR PESTAÑAS (TAB SWITCHER)
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    
+    document.getElementById(tabId).classList.add('active');
+    event.currentTarget.classList.add('active');
+}
 
+// FUNCIONALIDAD 1: OBTENER NODOS DESDE MYSQL (HTTP GET)
+async function obtenerItems() {
+    const t0 = performance.now();
     try {
-        const res = await fetch(API_URL);
+        const res = await fetch(`${API_URL}/items`);
+        const t1 = performance.now();
+        
+        actualizarPing(Math.round(t1 - t0));
+
         const json = await res.json();
+        const list = document.getElementById('itemsList');
+        const counter = document.getElementById('counter');
         
         list.innerHTML = '';
         const items = json.data || [];
-        counter.textContent = items.length;
+        counter.textContent = `${items.length} Nodos`;
 
         if (items.length === 0) {
-            list.innerHTML = `<li class="empty-state">No hay registros almacenados. ¡Crea el primero arriba!</li>`;
+            list.innerHTML = `<p style="text-align:center; color:var(--text-dark); padding:30px;">Sin registros en la base de datos MySQL.</p>`;
             return;
         }
 
         items.forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'item-card';
-            li.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 12px; margin-bottom: 8px; border-radius: 8px; background: rgba(255,255,255,0.05);';
-            
-            li.innerHTML = `
-                <div class="item-content">
-                    <strong style="color: #4f46e5; display: block;">${escapeHTML(item.nombre)}</strong>
-                    <span style="color: #9ca3af; font-size: 0.9em;">${escapeHTML(item.descripcion || 'Sin descripción')}</span>
+            const card = document.createElement('div');
+            card.className = 'node-card';
+            card.innerHTML = `
+                <div>
+                    <h4>${escapeHTML(item.nombre)}</h4>
+                    <p>${escapeHTML(item.descripcion || 'Sin parámetros configurados')}</p>
                 </div>
-                <div style="display: flex; gap: 8px;">
-                    <button onclick="editarItem(${item.id}, '${escapeHTML(item.nombre)}', '${escapeHTML(item.descripcion || '')}')" style="background: #eab308; color: black; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">✏️</button>
-                    <button onclick="eliminarItem(${item.id})" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">🗑️</button>
+                <div class="node-actions">
+                    <button class="btn-icon" onclick="openModal(${item.id}, '${escapeHTML(item.nombre)}', '${escapeHTML(item.descripcion || '')}')">✏️ Edit</button>
+                    <button class="btn-icon" onclick="eliminarItem(${item.id})" style="border-color: var(--danger); color: var(--danger);">🗑️ Delete</button>
                 </div>
             `;
-            list.appendChild(li);
+            list.appendChild(card);
         });
 
     } catch (err) {
-        console.error('Error al obtener datos:', err);
+        setOffline();
     }
 }
 
-// --- CREAR (CREATE) ---
+// FUNCIONALIDAD 1: GUARDAR NUEVO NODO (HTTP POST)
 document.getElementById('itemForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    const nombreInput = document.getElementById('nombre');
-    const descripcionInput = document.getElementById('descripcion');
-
-    const nombre = nombreInput.value.trim();
-    const descripcion = descripcionInput.value.trim();
-
-    if (!nombre) return;
+    const nombre = document.getElementById('nombre').value;
+    const descripcion = document.getElementById('descripcion').value;
 
     try {
-        const res = await fetch(API_URL, {
+        const res = await fetch(`${API_URL}/items`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nombre, descripcion })
         });
 
         if (res.ok) {
-            nombreInput.value = '';
-            descripcionInput.value = '';
-            await obtenerItems();
+            document.getElementById('nombre').value = '';
+            document.getElementById('descripcion').value = '';
+            obtenerItems();
         }
     } catch (err) {
-        console.error('Error al guardar:', err);
+        alert('Error al procesar la petición HTTP POST');
     }
 });
 
-// --- ELIMINAR (DELETE) ---
+// FUNCIONALIDAD 1: ELIMINAR NODO (HTTP DELETE)
 async function eliminarItem(id) {
-    if (!confirm('¿Seguro que deseas eliminar este registro?')) return;
+    if (!confirm('¿Desconectar y eliminar nodo de la base de datos?')) return;
 
     try {
         const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-        if (res.ok) {
-            await obtenerItems();
-        }
+        if (res.ok) obtenerItems();
     } catch (err) {
-        console.error('Error al eliminar:', err);
+        alert('Error al eliminar nodo');
     }
 }
 
-// --- ACTUALIZAR (UPDATE) ---
-async function editarItem(id, nombreActual, descripcionActual) {
-    const nuevoNombre = prompt('Editar Nombre:', nombreActual);
-    if (nuevoNombre === null) return; // Cancelado
+// MODAL DE EDICIÓN (HTTP PUT)
+function openModal(id, nombre, descripcion) {
+    document.getElementById('editId').value = id;
+    document.getElementById('editNombre').value = nombre;
+    document.getElementById('editDescripcion').value = descripcion;
+    document.getElementById('editModal').style.display = 'flex';
+}
 
-    const nuevaDescripcion = prompt('Editar Descripción:', descripcionActual);
-    if (nuevaDescripcion === null) return;
+function closeModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+document.getElementById('editForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('editId').value;
+    const nombre = document.getElementById('editNombre').value;
+    const descripcion = document.getElementById('editDescripcion').value;
 
     try {
         const res = await fetch(`${API_URL}/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre: nuevoNombre, descripcion: nuevaDescripcion })
+            body: JSON.stringify({ nombre, descripcion })
         });
 
         if (res.ok) {
-            await obtenerItems();
+            closeModal();
+            obtenerItems();
         }
     } catch (err) {
-        console.error('Error al actualizar:', err);
+        alert('Error en actualización HTTP PUT');
     }
+});
+
+// FUNCIONALIDAD 2: TELEMETRÍA Y HEALTH CHECK DE RED
+function iniciarTelemetria() {
+    setInterval(async () => {
+        const t0 = performance.now();
+        try {
+            const res = await fetch(`${API_URL}/health`);
+            const t1 = performance.now();
+            if (res.ok) {
+                actualizarPing(Math.round(t1 - t0));
+                setOnline();
+            }
+        } catch (e) {
+            setOffline();
+        }
+    }, 4000);
+}
+
+function actualizarPing(ms) {
+    const latEl = document.getElementById('latencyVal');
+    const qEl = document.getElementById('channelQuality');
+    latEl.innerHTML = `${ms} <small>ms</small>`;
+
+    if (ms < 30) {
+        qEl.textContent = 'Canal Excelente (Baja Latencia)';
+        qEl.style.color = '#10b981';
+    } else if (ms < 100) {
+        qEl.textContent = 'Canal Normal (Red LAN)';
+        qEl.style.color = '#38bdf8';
+    } else {
+        qEl.textContent = 'Canal Congestionado';
+        qEl.style.color = '#f43f5e';
+    }
+}
+
+function setOnline() {
+    document.getElementById('statusDot').className = 'status-indicator online';
+    document.getElementById('statusTitle').textContent = 'CANAL ACTIVO';
+}
+
+function setOffline() {
+    document.getElementById('statusDot').className = 'status-indicator';
+    document.getElementById('statusTitle').textContent = 'SERVIDOR OFFLINE';
+    document.getElementById('latencyVal').innerHTML = `-- <small>ms</small>`;
+    document.getElementById('channelQuality').textContent = 'Sin respuesta de socket';
 }
 
 function escapeHTML(str) {

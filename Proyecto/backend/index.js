@@ -5,108 +5,68 @@ const db = require('./db');
 const app = express();
 const PORT = 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// --- ENDPOINTS DE LA API REST (CRUD) ---
+// Middleware de Telemetría e Inspección de Tráfico HTTP
+app.use((req, res, next) => {
+    const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    console.log(`📡 [CAPA 7 - HTTP] Método: ${req.method} | Ruta: ${req.url} | Cliente IP: ${clientIP}`);
+    next();
+});
 
-// 1. OBTENER TODOS LOS REGISTROS (READ - ALL)
+// FUNCIONALIDAD 1: CRUD COMPLETO
 app.get('/items', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM items ORDER BY id DESC');
-        res.json({ data: rows });
+        res.json({ status: 200, protocol: 'HTTP/1.1', data: rows });
     } catch (err) {
-        console.error('Error al obtener datos:', err);
-        res.status(500).json({ error: 'Error en la base de datos' });
+        res.status(500).json({ error: 'Error en servidor de BD' });
     }
 });
 
-// 2. OBTENER UN REGISTRO POR ID (READ - ONE)
-app.get('/items/:id', async (req, res) => {
-    const { id } = req.params;
-    try {
-        const [rows] = await db.query('SELECT * FROM items WHERE id = ?', [id]);
-        if (rows.length === 0) {
-            return res.status(404).json({ error: 'Elemento no encontrado' });
-        }
-        res.json({ data: rows[0] });
-    } catch (err) {
-        console.error('Error al obtener elemento:', err);
-        res.status(500).json({ error: 'Error en la base de datos' });
-    }
-});
-
-// 3. GUARDAR UN NUEVO REGISTRO (CREATE)
 app.post('/items', async (req, res) => {
     const { nombre, descripcion } = req.body;
-
-    if (!nombre) {
-        return res.status(400).json({ error: 'El campo "nombre" es obligatorio' });
-    }
+    if (!nombre) return res.status(400).json({ error: 'Nombre requerido' });
 
     try {
-        const sql = 'INSERT INTO items (nombre, descripcion) VALUES (?, ?)';
-        const [result] = await db.query(sql, [nombre, descripcion]);
-        
-        res.status(201).json({
-            message: 'Registro creado con éxito en MySQL',
-            data: {
-                id: result.insertId,
-                nombre,
-                descripcion
-            }
-        });
+        const [result] = await db.query('INSERT INTO items (nombre, descripcion) VALUES (?, ?)', [nombre, descripcion]);
+        res.status(201).json({ status: 201, data: { id: result.insertId, nombre, descripcion } });
     } catch (err) {
-        console.error('Error al insertar en MySQL:', err);
-        res.status(500).json({ error: 'Error al insertar en la base de datos' });
+        res.status(500).json({ error: 'Error al insertar registro' });
     }
 });
 
-// 4. ACTUALIZAR UN REGISTRO (UPDATE)
 app.put('/items/:id', async (req, res) => {
     const { id } = req.params;
     const { nombre, descripcion } = req.body;
-
-    if (!nombre) {
-        return res.status(400).json({ error: 'El nombre es obligatorio' });
-    }
-
     try {
-        const sql = 'UPDATE items SET nombre = ?, descripcion = ? WHERE id = ?';
-        const [result] = await db.query(sql, [nombre, descripcion, id]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Elemento no encontrado' });
-        }
-
-        res.json({ message: 'Registro actualizado con éxito' });
+        const [result] = await db.query('UPDATE items SET nombre = ?, descripcion = ? WHERE id = ?', [nombre, descripcion, id]);
+        if (result.affectedRows === 0) return res.status(404).json({ error: 'No encontrado' });
+        res.json({ status: 200, message: 'Registro actualizado' });
     } catch (err) {
-        console.error('Error al actualizar en MySQL:', err);
-        res.status(500).json({ error: 'Error al actualizar en la base de datos' });
+        res.status(500).json({ error: 'Error al actualizar' });
     }
 });
 
-// 5. ELIMINAR UN REGISTRO (DELETE)
 app.delete('/items/:id', async (req, res) => {
     const { id } = req.params;
-
     try {
-        const sql = 'DELETE FROM items WHERE id = ?';
-        const [result] = await db.query(sql, [id]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Elemento no encontrado' });
-        }
-
-        res.json({ message: 'Registro eliminado con éxito' });
+        const [result] = await db.query('DELETE FROM items WHERE id = ?', [id]);
+        if (result.affectedRows === 0) return res.status(404).json({ error: 'No encontrado' });
+        res.json({ status: 200, message: 'Registro eliminado' });
     } catch (err) {
-        console.error('Error al eliminar en MySQL:', err);
-        res.status(500).json({ error: 'Error al eliminar en la base de datos' });
+        res.status(500).json({ error: 'Error al eliminar' });
     }
 });
 
-// Iniciar Servidor
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor Backend corriendo en http://localhost:${PORT}`);
+// FUNCIONALIDAD 2: HEALTH CHECK DE RED (TELEMETRÍA)
+app.get('/health', (req, res) => {
+    res.json({ status: 'ONLINE', timestamp: new Date(), port: PORT, protocol: 'TCP/IP' });
+});
+
+// Escuchar en 0.0.0.0 para acceso desde la red LAN
+// Endpoint que responde a la función iniciarTelemetria()
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK' });
 });
