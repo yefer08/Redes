@@ -3,153 +3,378 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telemática & Network Operations Center (NOC)</title>
+    <title>NetCore | Redes seguras</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- FONDOS CON GLOW AMBIENTAL TELEMÁTICO -->
-    <div class="glow-orb orb-1"></div>
-    <div class="glow-orb orb-2"></div>
+    <div class="bg-grid"></div>
+    <div class="glow glow-one"></div>
+    <div class="glow glow-two"></div>
 
-    <div class="app-wrapper">
-        <!-- TOP NAVIGATION BAR -->
-        <header class="navbar">
-            <div class="brand-container">
-                <div class="pulse-icon">📡</div>
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="brand-wrap">
+                <div class="brand-mark">N</div>
                 <div>
-                    <h1>NOC COMMAND CENTER <span class="badge-tag">TELEMATICS V3</span></h1>
-                    <p class="brand-sub">Sistema de Infraestructura Distribuida sobre Modelo OSI & TCP/IP</p>
+                    <p class="brand-name">NetCore</p>
+                    <span class="brand-tag">DNS • DHCP • Firewall</span>
                 </div>
             </div>
-            
-            <div class="server-status-widget">
-                <div class="status-indicator online" id="statusDot"></div>
-                <div class="status-info">
-                    <span class="status-title" id="statusTitle">CANAL ACTIVO</span>
-                    <span class="status-sub" id="statusPort">TCP PORT: 3000</span>
-                </div>
-            </div>
+
+            <nav class="main-nav">
+                <a href="#soluciones">Soluciones</a>
+                <a href="#diagnostico">Diagnóstico</a>
+                <a href="#seguridad">Seguridad</a>
+            </nav>
+
+            <button class="nav-cta">Ver demo</button>
         </header>
 
-        <!-- DASHBOARD HERO METRICS (TELEMETRÍA EN TIEMPO REAL) -->
-        <section class="hero-metrics">
-            <div class="metric-box glowing-border">
-                <span class="m-label">CAPA 7 OSI</span>
-                <strong class="m-value">HTTP/1.1 REST</strong>
-                <span class="m-sub">Payload: JSON</span>
-            </div>
-            <div class="metric-box">
-                <span class="m-label">SOCKET DE TRANSPORTE</span>
-                <strong class="m-value">TCP / IP</strong>
-                <span class="m-sub">Control de Flujo</span>
-            </div>
-            <div class="metric-box glowing-cyan">
-                <span class="m-label">LATENCIA RTT (PING)</span>
-                <strong class="m-value" id="latencyVal">0 <small>ms</small></strong>
-                <span class="m-sub" id="channelQuality">Calculando canal...</span>
-            </div>
-            <div class="metric-box">
-                <span class="m-label">DATABASE CLUSTER</span>
-                <strong class="m-value">3306 <small>MYSQL</small></strong>
-                <span class="m-sub">Pool Connection</span>
-            </div>
-        </section>
+        <main class="hero-section">
+            <div class="hero-copy">
+                <span class="eyebrow">Redes claras y seguras</span>
+                <h1>Todo tu sistema de red bajo control.</h1>
+                <p>
+                    Conecta servidores, gestiona DNS, controla DHCP y reforza la seguridad de tu infraestructura
+                    con una plataforma fácil de visualizar, entender y operar.
+                </p>
 
-        <!-- PESTAÑAS DE NAVEGACIÓN PRINCIPALES -->
-        <nav class="tabs-bar">
-            <button class="tab-btn active" onclick="switchTab('crud-panel')">⚙️ Módulo 1: CRUD & Nodos LAN</button>
-            <button class="tab-btn" onclick="switchTab('osi-panel')">🌐 Módulo 2: Modelo OSI & Arquitectura</button>
-        </nav>
-
-        <!-- SECCIÓN 1: FUNCIONALIDAD 1 - GESTIÓN CRUD DE NODOS -->
-        <main id="crud-panel" class="tab-content active">
-            <div class="grid-2col">
-                <!-- FORMULARIO DE REGISTRO -->
-                <div class="glass-card">
-                    <div class="card-head">
-                        <h3>⚡ Registrar Nodo de Red / Dispositivo</h3>
-                        <p>Agregar una nueva entidad a la base de datos relacional MySQL via HTTP POST</p>
-                    </div>
-                    <form id="itemForm">
-                        <div class="input-field">
-                            <label>Nombre del Nodo / Dispositivo</label>
-                            <input type="text" id="nombre" required placeholder="Ej. Gateway Principal IPv4">
-                        </div>
-                        <div class="input-field">
-                            <label>Configuración de Red / Parámetros</label>
-                            <textarea id="descripcion" rows="3" placeholder="Ej. Subred 192.168.1.0/24 - Interface eth0 - VLAN 20"></textarea>
-                        </div>
-                        <button type="submit" class="btn-primary">
-                            <span>Enviar Paquete HTTP POST</span> ➔
-                        </button>
-                    </form>
+                <div class="cta-row">
+                    <button class="primary-btn">Solicitar análisis</button>
+                    <button class="secondary-btn">Ver topología</button>
                 </div>
 
-                <!-- LISTA DE NODOS ALMACENADOS -->
-                <div class="glass-card">
-                    <div class="card-head space-between">
-                        <div>
-                            <h3>📋 Nodos de Red Activos</h3>
-                            <p>Consulta en tiempo real vía HTTP GET</p>
-                        </div>
-                        <span class="counter-badge" id="counter">0 Nodos</span>
+                <div class="mini-stats">
+                    <div>
+                        <strong>42</strong>
+                        <span>Dispositivos</span>
                     </div>
-                    <div id="itemsList" class="nodes-container">
-                        <!-- Carga dinámica via JavaScript -->
+                    <div>
+                        <strong>4.8 ms</strong>
+                        <span>Latencia</span>
                     </div>
+                    <div>
+                        <strong>99.98%</strong>
+                        <span>Disponibilidad</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-panel">
+                <div class="panel-top">
+                    <span class="signal-dot"></span>
+                    <span>Canal activo</span>
+                </div>
+
+                <div class="network-map">
+                    <div class="node dns">DNS <small>10.10.0.10</small></div>
+                    <div class="node router">Router <small>192.168.1.1</small></div>
+                    <div class="node firewall">Firewall <small>ACL</small></div>
+                    <div class="node dhcp">DHCP <small>10.10.0.20</small></div>
+                    <div class="node server">Servidor <small>Web</small></div>
+                    <div class="node client">Equipo <small>LAN</small></div>
+                    <div class="flow flow-1"></div>
+                    <div class="flow flow-2"></div>
+                    <div class="flow flow-3"></div>
                 </div>
             </div>
         </main>
 
-        <!-- SECCIÓN 2: FUNCIONALIDAD 2 - MODELO OSI Y ARQUITECTURA -->
-        <section id="osi-panel" class="tab-content">
+        <section class="feature-strip" id="soluciones">
+            <article class="feature-card">
+                <span class="feature-icon">🌐</span>
+                <h3>DNS inteligente</h3>
+                <p>Resuelve nombres y valida conexiones con rapidez y claridad.</p>
+            </article>
+            <article class="feature-card">
+                <span class="feature-icon">📡</span>
+                <h3>DHCP dinámico</h3>
+                <p>Controla asignación de IP y leases sin complicaciones.</p>
+            </article>
+            <article class="feature-card">
+                <span class="feature-icon">🛡️</span>
+                <h3>Seguridad activa</h3>
+                <p>Bloquea accesos no autorizados y revisa reglas por segmento.</p>
+            </article>
+        </section>
+
+        <section class="steps-section">
+            <div class="section-title">
+                <span class="eyebrow">¿Cómo funciona?</span>
+                <h2>Simple para entender y fácil de manejar.</h2>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <span class="step-number">01</span>
+                    <h3>Conecta</h3>
+                    <p>Registra routers, servidores y equipos de forma clara.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">02</span>
+                    <h3>Configura</h3>
+                    <p>Asigna DNS, subredes y leases con una vista visual rápida.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">03</span>
+                    <h3>Protege</h3>
+                    <p>Aplica políticas y revisa seguridad del entorno.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-grid" id="diagnostico">
             <div class="glass-card">
                 <div class="card-head">
-                    <h3>🌐 Mapeo del Modelo OSI en la Aplicación Telemática</h3>
-                    <p>Desglose de la pila de protocolos implementada en el sistema</p>
+                    <div>
+                        <span class="eyebrow small">Diagnóstico</span>
+                        <h3>Revisión rápida de red</h3>
+                    </div>
                 </div>
-                
-                <div class="osi-stack">
-                    <div class="osi-layer l7">
-                        <span class="l-num">Capa 7</span>
-                        <span class="l-name">Aplicación</span>
-                        <span class="l-desc">Interfaz Web (HTML/CSS/JS) y API RESTful exponiendo endpoints HTTP.</span>
+
+                <form id="dnsForm" class="dns-form">
+                    <label for="domainInput">Dominio</label>
+                    <input id="domainInput" type="text" value="nexus.local" placeholder="Ej. app.netcore.local">
+
+                    <label for="subnetInput">Subred</label>
+                    <input id="subnetInput" type="text" value="192.168.10.0/24" placeholder="Ej. 192.168.10.0/24">
+
+                    <button type="submit" class="primary-btn full-width">Verificar infraestructura</button>
+                </form>
+
+                <div id="dnsResult" class="result-box">
+                    <div class="result-row">
+                        <span>DNS</span>
+                        <strong>ns1.nexus.local</strong>
                     </div>
-                    <div class="osi-layer l6">
-                        <span class="l-num">Capa 6</span>
-                        <span class="l-name">Presentación</span>
-                        <span class="l-desc">Formateo de datos JSON y codificación UTF-8 en peticiones y respuestas.</span>
+                    <div class="result-row">
+                        <span>IP asignada</span>
+                        <strong>192.168.10.12</strong>
                     </div>
-                    <div class="osi-layer l5">
-                        <span class="l-num">Capa 5</span>
-                        <span class="l-name">Sesión</span>
-                        <span class="l-desc">Gestión de conexiones continuas mediante el Pool de MySQL (`mysql2`).</span>
+                    <div class="result-row">
+                        <span>TTL</span>
+                        <strong>300 s</strong>
                     </div>
-                    <div class="osi-layer l4">
-                        <span class="l-num">Capa 4</span>
-                        <span class="l-name">Transporte</span>
-                        <span class="l-desc">Sockets TCP de confiabilidad garantizada sobre Puertos 3000 (Express) y 3306 (MySQL).</span>
+                </div>
+            </div>
+
+            <div class="glass-card" id="seguridad">
+                <div class="card-head">
+                    <div>
+                        <span class="eyebrow small">Seguridad</span>
+                        <h3>Políticas activas</h3>
                     </div>
-                    <div class="osi-layer l3">
-                        <span class="l-num">Capa 3</span>
-                        <span class="l-name">Red</span>
-                        <span class="l-desc">Direccionamiento por protocolo IPv4 (`192.168.X.X` / `127.0.0.1`) para transmisión LAN.</span>
+                </div>
+
+                <div class="policy-list">
+                    <div class="policy-item">
+                        <span class="policy-bullet green"></span>
+                        <div>
+                            <strong>Autenticación segura</strong>
+                            <small>Acceso protegido para administradores.</small>
+                        </div>
                     </div>
-                    <div class="osi-layer l2">
-                        <span class="l-num">Capa 2</span>
-                        <span class="l-name">Enlace de Datos</span>
-                        <span class="l-desc">Tramas Ethernet / Wi-Fi (IEEE 802.11) con direccionamiento MAC de interfaz local.</span>
+                    <div class="policy-item">
+                        <span class="policy-bullet cyan"></span>
+                        <div>
+                            <strong>Firewall por segmento</strong>
+                            <small>Bloquea tráfico sospechoso y puertos no autorizados.</small>
+                        </div>
                     </div>
-                    <div class="osi-layer l1">
-                        <span class="l-num">Capa 1</span>
-                        <span class="l-name">Física</span>
-                        <span class="l-desc">Transmisión de impulsos eléctricos (UTP) y radiofrecuencia (Wi-Fi 2.4/5GHz).</span>
+                    <div class="policy-item">
+                        <span class="policy-bullet orange"></span>
+                        <div>
+                            <strong>Auditoría continua</strong>
+                            <small>Registra cambios en servidores, routers y reglas.</small>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <section class="security-simulator">
+            <div class="simulator-header">
+                <div>
+                    <span class="eyebrow small">Firewall</span>
+                    <h3>Control de puertos y accesos</h3>
+                </div>
+                <span class="counter-pill" id="policyStatus">Política activa</span>
+            </div>
+
+            <div class="simulator-grid">
+                <div class="port-list">
+                    <button class="port-toggle active" data-port="DNS" data-number="53">
+                        <span>DNS</span>
+                        <strong>53</strong>
+                    </button>
+                    <button class="port-toggle active" data-port="HTTP" data-number="80">
+                        <span>HTTP</span>
+                        <strong>80</strong>
+                    </button>
+                    <button class="port-toggle active" data-port="HTTPS" data-number="443">
+                        <span>HTTPS</span>
+                        <strong>443</strong>
+                    </button>
+                    <button class="port-toggle active" data-port="MySQL" data-number="3306">
+                        <span>MySQL</span>
+                        <strong>3306</strong>
+                    </button>
+                    <button class="port-toggle active" data-port="SSH" data-number="22">
+                        <span>SSH</span>
+                        <strong>22</strong>
+                    </button>
+                </div>
+
+                <div class="simulator-panel">
+                    <div class="summary-box">
+                        <p>Estado global</p>
+                        <h4 id="summaryTitle">Firewall protegido</h4>
+                    </div>
+
+                    <div class="summary-list">
+                        <div class="summary-item">
+                            <span>Puertos abiertos</span>
+                            <strong id="openPortsCount">5</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Acceso externo</span>
+                            <strong id="externalAccess">Permitido</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="status-panel">
+            <div class="status-header">
+                <div>
+                    <span class="eyebrow small">Estado</span>
+                    <h3>Conectividad de nodos</h3>
+                </div>
+                <span class="counter-pill">12 enlaces activos</span>
+            </div>
+
+            <div class="status-list">
+                <div class="status-row">
+                    <div>
+                        <strong>Router principal</strong>
+                        <small>Gateway 10.0.0.1</small>
+                    </div>
+                    <span class="chip success">Activo</span>
+                </div>
+                <div class="status-row">
+                    <div>
+                        <strong>Servidor DNS</strong>
+                        <small>ns1.netcore.local</small>
+                    </div>
+                    <span class="chip success">Resuelve</span>
+                </div>
+                <div class="status-row">
+                    <div>
+                        <strong>Servidor DHCP</strong>
+                        <small>Pool 192.168.10.0/24</small>
+                    </div>
+                    <span class="chip success">Lease OK</span>
+                </div>
+                <div class="status-row">
+                    <div>
+                        <strong>Firewall</strong>
+                        <small>Reglas externas</small>
+                    </div>
+                    <span class="chip warning">Revisión</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+                    <span class="step-number">02</span>
+                    <h3>Configura</h3>
+                    <p>Asigna DNS, subredes y leases con una vista visual rápida.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">03</span>
+                    <h3>Protege</h3>
+                    <p>Aplica políticas y revisa seguridad del entorno.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-grid" id="diagnostico">
+            <div class="glass-card">
+                <div class="card-head">
+                    <div>
+                        <span class="eyebrow small">Diagnóstico</span>
+                        <h3>Revisión rápida de red</h3>
+                    </div>
+                </div>
+
+                <form id="dnsForm" class="dns-form">
+                    <label for="domainInput">Dominio</label>
+                    <input id="domainInput" type="text" value="nexus.local" placeholder="Ej. app.netcore.local">
+
+                    <label for="subnetInput">Subred</label>
+                    <input id="subnetInput" type="text" value="192.168.10.0/24" placeholder="Ej. 192.168.10.0/24">
+
+                    <button type="submit" class="primary-btn full-width">Verificar infraestructura</button>
+                </form>
+
+                <div id="dnsResult" class="result-box">
+                    <div class="result-row">
+                        <span>DNS</span>
+                        <strong>ns1.nexus.local</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>IP asignada</span>
+                        <strong>192.168.10.12</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>TTL</span>
+                        <strong>300 s</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card" id="seguridad">
+                <div class="card-head">
+                    <div>
+                        <span class="eyebrow small">Seguridad</span>
+                        <h3>Políticas activas</h3>
+                    </div>
+                </div>
+
+                <div class="policy-list">
+                    <div class="policy-item">
+                        <span class="policy-bullet green"></span>
+                        <div>
+                            <strong>Autenticación segura</strong>
+                            <small>Acceso protegido para administradores.</small>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <span class="policy-bullet cyan"></span>
+                        <div>
+                            <strong>Firewall por segmento</strong>
+                            <small>Bloquea tráfico sospechoso y puertos no autorizados.</small>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <span class="policy-bullet orange"></span>
+                        <div>
+                            <strong>Auditoría continua</strong>
+                            <small>Registra cambios en servidores, routers y reglas.</small>
+                        </div>
+>>>>>>> 7ffac88 (Mejora landing page de redes)
+                    </div>
+                </div>
+            </div>
+        </section>
+<<<<<<< HEAD
     </div>
 
     <!-- MODAL DE EDICIÓN PROFESIONAL -->
@@ -180,3 +405,104 @@
     <script src="app.js"></script>
 </body>
 </html>
+=======
+
+        <section class="security-simulator">
+            <div class="simulator-header">
+                <div>
+                    <span class="eyebrow small">Firewall</span>
+                    <h3>Control de puertos y accesos</h3>
+                </div>
+                <span class="counter-pill" id="policyStatus">Política activa</span>
+            </div>
+
+            <div class="simulator-grid">
+                <div class="port-list">
+                    <button class="port-toggle active" data-port="DNS" data-number="53">
+                        <span>DNS</span>
+                        <strong>53</strong>
+                    </button>
+                    <button class="port-toggle active" data-port="HTTP" data-number="80">
+                        <span>HTTP</span>
+                        <strong>80</strong>
+                    </button>
+                    <button class="port-toggle active" data-port="HTTPS" data-number="443">
+                        <span>HTTPS</span>
+                        <strong>443</strong>
+                    </button>
+                    <button class="port-toggle active" data-port="MySQL" data-number="3306">
+                        <span>MySQL</span>
+                        <strong>3306</strong>
+                    </button>
+                    <button class="port-toggle active" data-port="SSH" data-number="22">
+                        <span>SSH</span>
+                        <strong>22</strong>
+                    </button>
+                </div>
+
+                <div class="simulator-panel">
+                    <div class="summary-box">
+                        <p>Estado global</p>
+                        <h4 id="summaryTitle">Firewall protegido</h4>
+                    </div>
+
+                    <div class="summary-list">
+                        <div class="summary-item">
+                            <span>Puertos abiertos</span>
+                            <strong id="openPortsCount">5</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Acceso externo</span>
+                            <strong id="externalAccess">Permitido</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="status-panel">
+            <div class="status-header">
+                <div>
+                    <span class="eyebrow small">Estado</span>
+                    <h3>Conectividad de nodos</h3>
+                </div>
+                <span class="counter-pill">12 enlaces activos</span>
+            </div>
+
+            <div class="status-list">
+                <div class="status-row">
+                    <div>
+                        <strong>Router principal</strong>
+                        <small>Gateway 10.0.0.1</small>
+                    </div>
+                    <span class="chip success">Activo</span>
+                </div>
+                <div class="status-row">
+                    <div>
+                        <strong>Servidor DNS</strong>
+                        <small>ns1.netcore.local</small>
+                    </div>
+                    <span class="chip success">Resuelve</span>
+                </div>
+                <div class="status-row">
+                    <div>
+                        <strong>Servidor DHCP</strong>
+                        <small>Pool 192.168.10.0/24</small>
+                    </div>
+                    <span class="chip success">Lease OK</span>
+                </div>
+                <div class="status-row">
+                    <div>
+                        <strong>Firewall</strong>
+                        <small>Reglas externas</small>
+                    </div>
+                    <span class="chip warning">Revisión</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+>>>>>>> 7ffac88 (Mejora landing page de redes)
