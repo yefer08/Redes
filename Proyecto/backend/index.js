@@ -65,8 +65,7 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ONLINE', timestamp: new Date(), port: PORT, protocol: 'TCP/IP' });
 });
 
-// Escuchar en 0.0.0.0 para acceso desde la red LAN
-// Endpoint que responde a la función iniciarTelemetria()
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'OK' });
+// Escuchar en 0.0.0.0 para acceso desde la red local (LAN)
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Servidor de Telemática activo en http://localhost:${PORT}`);
 });

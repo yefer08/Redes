@@ -1098,197 +1098,40 @@ button, input {
 .policy-bullet.cyan { background: var(--cyan); box-shadow: 0 0 10px rgba(76, 201, 240, 0.75); }
 .policy-bullet.orange { background: var(--orange); box-shadow: 0 0 10px rgba(251, 191, 36, 0.7); }
 
-.policy-item strong,
-.status-row strong {
-    display: block;
-    margin-bottom: 4px;
+.btn-primary {
+    width: 100%; background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-teal) 100%);
+    color: #04111d; border: none; padding: 14px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: var(--transition);
 }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
 
-.policy-item small,
-.status-row small {
-    color: var(--muted);
+/* NODES LIST */
+.nodes-container { display: flex; flex-direction: column; gap: 12px; max-height: 480px; overflow-y: auto; }
+.node-card {
+    background: rgba(6, 9, 17, 0.5); border: 1px solid var(--border-card);
+    border-left: 4px solid var(--accent-cyan); padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;
 }
+.node-card h4 { font-size: 0.95rem; color: var(--text-bright); margin-bottom: 4px; }
+.node-card p { font-size: 0.85rem; color: var(--text-dim); font-family: var(--font-mono); }
+.node-actions { display: flex; gap: 8px; }
+.btn-icon { background: rgba(255,255,255,0.05); border: 1px solid var(--border-card); color: white; padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: var(--transition); }
+.btn-icon:hover { background: var(--accent-cyan); color: black; }
 
-.security-simulator,
-.status-panel {
-    margin-top: 22px;
-    padding: 22px 24px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: rgba(9, 18, 30, 0.72);
-    box-shadow: var(--shadow);
+/* MAPEO CAPAS OSI */
+.osi-stack { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+.osi-layer {
+    display: grid; grid-template-columns: 90px 140px 1fr; align-items: center;
+    background: rgba(6, 9, 17, 0.6); border: 1px solid var(--border-card); padding: 14px 20px; border-radius: 10px;
 }
+.l-num { font-weight: 800; font-family: var(--font-mono); color: var(--accent-cyan); font-size: 0.85rem; }
+.l-name { font-weight: 700; color: var(--text-bright); font-size: 0.9rem; }
+.l-desc { color: var(--text-dim); font-size: 0.85rem; }
 
-.simulator-header,
-.status-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-    margin-bottom: 18px;
+/* MODAL */
+.modal-backdrop {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 999;
 }
-
-.simulator-header h3,
-.status-header h3 {
-    margin-top: 10px;
-    font-size: 1.6rem;
-    letter-spacing: -0.04em;
-}
-
-.counter-pill {
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: rgba(76, 201, 240, 0.08);
-    color: var(--cyan);
-    font-size: 0.72rem;
-    font-weight: 700;
-}
-
-.simulator-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 18px;
-}
-
-.port-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-}
-
-.port-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px;
-    border-radius: 14px;
-    border: 1px solid rgba(148, 163, 184, 0.14);
-    background: rgba(4, 10, 17, 0.56);
-    color: var(--text);
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.port-toggle.active {
-    border-color: rgba(52, 211, 153, 0.5);
-    background: rgba(52, 211, 153, 0.08);
-}
-
-.port-toggle.inactive {
-    border-color: rgba(251, 191, 36, 0.3);
-    background: rgba(251, 191, 36, 0.06);
-    opacity: 0.8;
-}
-
-.port-toggle span {
-    color: var(--muted);
-}
-
-.port-toggle strong {
-    font-family: 'JetBrains Mono', monospace;
-}
-
-.simulator-panel {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 18px;
-    padding: 18px;
-    border-radius: 18px;
-    background: rgba(4, 10, 17, 0.56);
-    border: 1px solid rgba(148, 163, 184, 0.12);
-}
-
-.summary-box p {
-    color: var(--muted);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-.summary-box h4 {
-    margin-top: 8px;
-    font-size: 1.4rem;
-}
-
-.summary-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.summary-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 10px;
-    border-top: 1px solid rgba(148, 163, 184, 0.12);
-    color: var(--muted);
-}
-
-.summary-item strong {
-    color: var(--text);
-}
-
-.chip {
-    padding: 7px 12px;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 700;
-}
-
-.chip.success {
-    background: rgba(52, 211, 153, 0.08);
-    color: var(--green);
-    border: 1px solid rgba(52, 211, 153, 0.3);
-}
-
-.chip.warning {
-    background: rgba(251, 191, 36, 0.08);
-    color: var(--orange);
-    border: 1px solid rgba(251, 191, 36, 0.3);
-}
-
-@media (max-width: 960px) {
-    .hero-section,
-    .dashboard-grid,
-    .feature-strip,
-    .steps-grid,
-    .simulator-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .topbar {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-}
-
-@media (max-width: 620px) {
-    .page-shell {
-        padding-left: 12px;
-        padding-right: 12px;
-    }
-
-    .main-nav {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 14px 18px;
-    }
-
-    .cta-row {
-        flex-direction: column;
-    }
-
-    .primary-btn,
-    .secondary-btn,
-    .nav-cta {
-        width: 100%;
-    }
-
-    .mini-stats {
-        grid-template-columns: 1fr;
-    }
-}
->>>>>>> 7ffac88 (Mejora landing page de redes)
+.modal-box { width: 90%; max-width: 480px; }
+.close-btn { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+.modal-footer { display: flex; gap: 12px; margin-top: 15px; }
+.btn-cancel { background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--border-card); padding: 12px; border-radius: 10px; cursor: pointer; flex: 1; }
