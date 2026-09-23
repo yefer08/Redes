@@ -15,6 +15,36 @@ app.use((req, res, next) => {
     next();
 });
 
+// ENDPOINT DE AUTENTICACIÓN / LOGIN
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Usuario y contraseña requeridos' });
+    }
+
+    try {
+        const [rows] = await db.query(
+            'SELECT id, username, nombre FROM usuarios WHERE username = ? AND password = ?',
+            [username, password]
+        );
+
+        if (rows.length === 0) {
+            return res.status(401).json({ error: 'Credenciales inválidas' });
+        }
+
+        const usuario = rows[0];
+        res.json({
+            status: 200,
+            message: 'Autenticación exitosa',
+            user: { id: usuario.id, username: usuario.username, nombre: usuario.nombre }
+        });
+    } catch (err) {
+        console.error('Error en /login:', err);
+        res.status(500).json({ error: 'Error en la base de datos' });
+    }
+});
+
 // FUNCIONALIDAD 1: CRUD COMPLETO
 app.get('/items', async (req, res) => {
     try {
