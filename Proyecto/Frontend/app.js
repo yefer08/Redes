@@ -2,6 +2,44 @@
 const API_URL = 'http://localhost:3000'; // Usa tu IP IPv4 si vas a probar desde el celular en la LAN
 
 document.addEventListener('DOMContentLoaded', () => {
+    // --- 0. CONTROL DE SESIÓN Y AUTENTICACIÓN ---
+    verificarSesion();
+
+    // Formulario de Login
+    document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('loginUser').value;
+        const password = document.getElementById('loginPass').value;
+        const errorEl = document.getElementById('loginError');
+
+        try {
+            const res = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                localStorage.setItem('usuario_redes', JSON.stringify(data.user));
+                document.getElementById('loginOverlay').style.display = 'none';
+                if (errorEl) errorEl.style.display = 'none';
+                obtenerItems();
+            } else {
+                if (errorEl) {
+                    errorEl.textContent = data.error || 'Credenciales incorrectas';
+                    errorEl.style.display = 'block';
+                }
+            }
+        } catch (err) {
+            if (errorEl) {
+                errorEl.textContent = 'Error de conexión con el servidor';
+                errorEl.style.display = 'block';
+            }
+        }
+    });
+
     // --- 1. INICIALIZAR SISTEMA Y TELEMETRÍA ---
     obtenerItems();
     medirLatencia();
@@ -42,6 +80,25 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diagnostico')?.scrollIntoView({ behavior: 'smooth' });
     });
 });
+
+// FUNCIÓN PARA VERIFICAR SESIÓN
+function verificarSesion() {
+    const sesion = localStorage.getItem('usuario_redes');
+    const overlay = document.getElementById('loginOverlay');
+    if (overlay) {
+        if (sesion) {
+            overlay.style.display = 'none';
+        } else {
+            overlay.style.display = 'flex';
+        }
+    }
+}
+
+// FUNCIÓN PARA CERRAR SESIÓN
+function cerrarSesion() {
+    localStorage.removeItem('usuario_redes');
+    location.reload();
+}
 
 // --- 3. FUNCIONALIDAD CRUD (CONEXIÓN BACKEND & MYSQL) ---
 

@@ -25,12 +25,15 @@
                 </div>
             </div>
             
-            <div class="server-status-widget">
-                <div class="status-indicator online" id="statusDot"></div>
-                <div class="status-info">
-                    <span class="status-title" id="statusTitle">CANAL ACTIVO</span>
-                    <span class="status-sub" id="statusPort">TCP PORT: 3000</span>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="server-status-widget">
+                    <div class="status-indicator online" id="statusDot"></div>
+                    <div class="status-info">
+                        <span class="status-title" id="statusTitle">CANAL ACTIVO</span>
+                        <span class="status-sub" id="statusText">TCP PORT: 3000</span>
+                    </div>
                 </div>
+                <button onclick="cerrarSesion()" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">🔒 Salir</button>
             </div>
         </header>
 
@@ -71,7 +74,7 @@
                 <div class="glass-card">
                     <div class="card-head">
                         <h3>⚡ Registrar Nodo de Red / Dispositivo</h3>
-                        <p>Agregar una nueva entidad a la base de datos relacional MySQL via HTTP POST</p>
+                        <p>Agregar una nueva entidad a la base de datos relacional MySQL vía HTTP POST</p>
                     </div>
                     <form id="itemForm">
                         <div class="input-field">
@@ -98,10 +101,64 @@
                         <span class="counter-badge" id="counter">0 Nodos</span>
                     </div>
                     <div id="itemsList" class="nodes-container">
-                        <!-- Carga dinámica via JavaScript -->
+                        <!-- Carga dinámica vía JavaScript -->
                     </div>
                 </div>
             </div>
+
+            <!-- SIMULADOR DE FIREWALL Y PUERTOS -->
+            <section class="security-simulator" style="margin-top: 25px;">
+                <div class="simulator-header">
+                    <div>
+                        <span class="eyebrow small" style="color: #4cc9f0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Firewall</span>
+                        <h3 style="margin: 0; color: #f8fafc;">Control de puertos y accesos</h3>
+                    </div>
+                    <span class="counter-pill" id="policyStatus">Sockets TCP Activos</span>
+                </div>
+
+                <div class="simulator-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                    <div class="port-list" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        <button class="port-toggle active" data-port="DNS" data-number="53">
+                            <span>DNS</span>
+                            <strong>53</strong>
+                        </button>
+                        <button class="port-toggle active" data-port="HTTP" data-number="80">
+                            <span>HTTP</span>
+                            <strong>80</strong>
+                        </button>
+                        <button class="port-toggle active" data-port="HTTPS" data-number="443">
+                            <span>HTTPS</span>
+                            <strong>443</strong>
+                        </button>
+                        <button class="port-toggle active" data-port="MySQL" data-number="3306">
+                            <span>MySQL</span>
+                            <strong>3306</strong>
+                        </button>
+                        <button class="port-toggle active" data-port="SSH" data-number="22">
+                            <span>SSH</span>
+                            <strong>22</strong>
+                        </button>
+                    </div>
+
+                    <div class="simulator-panel" style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="summary-box" style="margin-bottom: 12px;">
+                            <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">Estado global</p>
+                            <h4 id="summaryTitle" style="margin: 4px 0 0 0; color: #f8fafc;">Conexión de red estable</h4>
+                        </div>
+
+                        <div class="summary-list" style="display: flex; gap: 20px;">
+                            <div class="summary-item">
+                                <span style="font-size: 0.75rem; color: #94a3b8; display: block;">Puertos abiertos</span>
+                                <strong id="openPortsCount" style="color: #4cc9f0;">5</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span style="font-size: 0.75rem; color: #94a3b8; display: block;">Acceso externo</span>
+                                <strong id="externalAccess" style="color: #10b981;">Permitido (0.0.0.0)</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
 
         <!-- SECCIÓN 2: FUNCIONALIDAD 2 - MODELO OSI Y ARQUITECTURA -->
@@ -151,7 +208,27 @@
                 </div>
             </div>
         </section>
-<<<<<<< HEAD
+    </div>
+
+    <!-- OVERLAY DE AUTENTICACIÓN / LOGIN -->
+    <div id="loginOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: #0b0f17; display: flex; justify-content: center; align-items: center; z-index: 9999;">
+        <div class="glass-card" style="width: 90%; max-width: 400px; padding: 30px; text-align: center; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; background: rgba(18, 24, 38, 0.95);">
+            <h2 style="margin-bottom: 8px; color: #f8fafc;">🔐 Acceso al Dashboard</h2>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;">Autenticación Telemática de Infraestructura</p>
+            
+            <form id="loginForm" style="display: flex; flex-direction: column; gap: 14px;">
+                <div style="text-align: left;">
+                    <label style="font-size: 0.8rem; color: #94a3b8; display: block; margin-bottom: 4px;">Usuario</label>
+                    <input type="text" id="loginUser" required placeholder="Ej: admin" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #0b0f17; color: white;">
+                </div>
+                <div style="text-align: left;">
+                    <label style="font-size: 0.8rem; color: #94a3b8; display: block; margin-bottom: 4px;">Contraseña</label>
+                    <input type="password" id="loginPass" required placeholder="••••••••" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #0b0f17; color: white;">
+                </div>
+                <button type="submit" class="btn-primary" style="margin-top: 10px; padding: 12px; font-weight: bold; cursor: pointer; width: 100%;">Iniciar Sesión ➔</button>
+            </form>
+            <p id="loginError" style="color: #ef4444; font-size: 0.85rem; margin-top: 12px; display: none;"></p>
+        </div>
     </div>
 
     <!-- MODAL DE EDICIÓN FLOTANTE -->
@@ -161,123 +238,33 @@
                 <h3 style="margin: 0;">✏️ Editar Nodo de Red</h3>
                 <button class="close-btn" onclick="closeModal()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">×</button>
             </div>
-            <form id="editForm" class="dns-form">
+            <form id="editForm">
                 <input type="hidden" id="editId">
-                <label>Nombre del Dispositivo</label>
-                <input type="text" id="editNombre" required>
-                
-                <label>Parámetros / Configuración</label>
-                <input type="text" id="editDescripcion">
-                
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button type="button" class="secondary-btn" onclick="closeModal()" style="flex: 1;">Cancelar</button>
-                    <button type="submit" class="primary-btn" style="flex: 1;">Actualizar (PUT)</button>
+                <div class="input-field" style="margin-bottom: 12px;">
+                    <label style="font-size: 0.8rem; color: #94a3b8; display: block; margin-bottom: 4px;">Nombre del Dispositivo</label>
+                    <input type="text" id="editNombre" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #0b0f17; color: white;">
+                </div>
+                <div class="input-field" style="margin-bottom: 15px;">
+                    <label style="font-size: 0.8rem; color: #94a3b8; display: block; margin-bottom: 4px;">Parámetros / Configuración</label>
+                    <input type="text" id="editDescripcion" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #0b0f17; color: white;">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" onclick="closeModal()" style="flex: 1; padding: 10px; background: rgba(255,255,255,0.1); border: none; color: white; border-radius: 8px; cursor: pointer;">Cancelar</button>
+                    <button type="submit" class="btn-primary" style="flex: 1; padding: 10px;">Actualizar (PUT)</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <script>
+        // Función auxiliar para cambio de pestañas de navegación
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
     <script src="app.js"></script>
 </body>
 </html>
-=======
-
-        <section class="security-simulator">
-            <div class="simulator-header">
-                <div>
-                    <span class="eyebrow small">Firewall</span>
-                    <h3>Control de puertos y accesos</h3>
-                </div>
-                <span class="counter-pill" id="policyStatus">Política activa</span>
-            </div>
-
-            <div class="simulator-grid">
-                <div class="port-list">
-                    <button class="port-toggle active" data-port="DNS" data-number="53">
-                        <span>DNS</span>
-                        <strong>53</strong>
-                    </button>
-                    <button class="port-toggle active" data-port="HTTP" data-number="80">
-                        <span>HTTP</span>
-                        <strong>80</strong>
-                    </button>
-                    <button class="port-toggle active" data-port="HTTPS" data-number="443">
-                        <span>HTTPS</span>
-                        <strong>443</strong>
-                    </button>
-                    <button class="port-toggle active" data-port="MySQL" data-number="3306">
-                        <span>MySQL</span>
-                        <strong>3306</strong>
-                    </button>
-                    <button class="port-toggle active" data-port="SSH" data-number="22">
-                        <span>SSH</span>
-                        <strong>22</strong>
-                    </button>
-                </div>
-
-                <div class="simulator-panel">
-                    <div class="summary-box">
-                        <p>Estado global</p>
-                        <h4 id="summaryTitle">Firewall protegido</h4>
-                    </div>
-
-                    <div class="summary-list">
-                        <div class="summary-item">
-                            <span>Puertos abiertos</span>
-                            <strong id="openPortsCount">5</strong>
-                        </div>
-                        <div class="summary-item">
-                            <span>Acceso externo</span>
-                            <strong id="externalAccess">Permitido</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="status-panel">
-            <div class="status-header">
-                <div>
-                    <span class="eyebrow small">Estado</span>
-                    <h3>Conectividad de nodos</h3>
-                </div>
-                <span class="counter-pill">12 enlaces activos</span>
-            </div>
-
-            <div class="status-list">
-                <div class="status-row">
-                    <div>
-                        <strong>Router principal</strong>
-                        <small>Gateway 10.0.0.1</small>
-                    </div>
-                    <span class="chip success">Activo</span>
-                </div>
-                <div class="status-row">
-                    <div>
-                        <strong>Servidor DNS</strong>
-                        <small>ns1.netcore.local</small>
-                    </div>
-                    <span class="chip success">Resuelve</span>
-                </div>
-                <div class="status-row">
-                    <div>
-                        <strong>Servidor DHCP</strong>
-                        <small>Pool 192.168.10.0/24</small>
-                    </div>
-                    <span class="chip success">Lease OK</span>
-                </div>
-                <div class="status-row">
-                    <div>
-                        <strong>Firewall</strong>
-                        <small>Reglas externas</small>
-                    </div>
-                    <span class="chip warning">Revisión</span>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <script src="app.js"></script>
-</body>
-</html>
->>>>>>> 7ffac88 (Mejora landing page de redes)
