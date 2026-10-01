@@ -21,9 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!form.checkValidity()) return;
         loginButton.disabled = true; loginButton.classList.add('is-loading');
         window.setTimeout(() => {
-            // En producción, reemplazar esta comparación por una petición a `${API_URL}/login`.
-            if (username.value.trim() === DEMO_USER && password.value === DEMO_PASSWORD) { window.location.href = 'index.html'; return; }
+            if (username.value.trim() === DEMO_USER && password.value === DEMO_PASSWORD) {
+                localStorage.setItem('usuario_redes', JSON.stringify({ id: 1, username: 'admin', nombre: 'Administrador de Redes' }));
+                window.location.href = 'index.html';
+                return;
+            }
             loginError.textContent = 'Usuario o contraseña incorrectos.'; loginButton.disabled = false; loginButton.classList.remove('is-loading');
         }, 650);
+
     });
 });
