@@ -1,25 +1,33 @@
-const mysql = require('mysql2/promise');
+// ==============================================================================
+// SCRIPT DE PRUEBA Y DIAGNÓSTICO DE BASE DE DATOS (NODE 14 / WINDOWS SERVER)
+// ==============================================================================
+const db = require('./db');
+const config = require('./config');
 
-async function testConnection() {
-    console.log('Intentando conectar a MySQL local...');
+async function runDiagnostic() {
+    console.log('====================================================');
+    console.log('🔍 INICIANDO DIAGNÓSTICO DE CONEXIÓN A BASE DE DATOS');
+    console.log(`- Motor: ${config.dbType.toUpperCase()}`);
+    console.log(`- Host: ${config.db.host}`);
+    console.log(`- Puerto: ${config.db.port}`);
+    console.log(`- Base de datos: ${config.db.database}`);
+    console.log(`- Usuario: ${config.db.user}`);
+    console.log(`- SSL Activado: ${Boolean(config.db.ssl)}`);
+    console.log('====================================================');
+
     try {
-        const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: '123456',
-            database: 'mi_base_datos',
-            port: 3306
-        });
-        console.log('✅ ¡CONEXIÓN EXITOSA A MYSQL!');
-        
-        const [rows] = await connection.query('SELECT 1 + 1 AS resultado');
-        console.log('Prueba de consulta OK, resultado:', rows[0].resultado);
-        await connection.end();
-    } catch (error) {
-        console.error('❌ ERROR AL CONECTAR:');
-        console.error('Código de error:', error.code);
-        console.error('Mensaje completo:', error.message);
+        const isOk = await db.testConnection();
+        if (isOk) {
+            console.log('✨ Diagnóstico finalizado con éxito.');
+        } else {
+            console.log('⚠️ La prueba falló. Revisa las credenciales o el servicio SQL.');
+        }
+    } catch (err) {
+        console.error('❌ Excepción durante el diagnóstico:', err);
+    } finally {
+        await db.closePool();
+        process.exit(0);
     }
 }
 
-testConnection();
+runDiagnostic();

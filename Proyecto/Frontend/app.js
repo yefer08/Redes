@@ -1,5 +1,8 @@
-// CONFIGURACIÓN DE ENDPOINT
-const API_URL = 'http://localhost:3000'; // Usa tu IP IPv4 si vas a probar desde el celular en la LAN
+// CONFIGURACIÓN DINÁMICA DE ENDPOINT (Compatible con dominio, IP o localhost)
+const API_URL = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null' && !window.location.origin.startsWith('file:'))
+    ? window.location.origin
+    : 'http://localhost:3000';
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- 0. CONTROL DE SESIÓN Y AUTENTICACIÓN ---
