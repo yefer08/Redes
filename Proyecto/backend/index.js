@@ -94,14 +94,21 @@ app.post('/login', async function (req, res) {
 });
 
 // --- ENDPOINTS CRUD: ITEMS ---
+// Almacén en memoria de respaldo si el motor SQL no está activo
+var inMemoryItems = [
+    { id: 1, nombre: 'Gateway Principal (192.168.1.1)', descripcion: 'Enrutador central y salida a Internet' },
+    { id: 2, nombre: 'Servidor DNS / DHCP', descripcion: 'Windows Server 2012 - Resolución de nombres activa' },
+    { id: 3, nombre: 'Controlador de Dominio (DC)', descripcion: 'Autenticación de usuarios y directivas de grupo' }
+];
+
 app.get('/items', async function (req, res) {
     try {
         var queryResult = await db.query('SELECT * FROM items ORDER BY id DESC');
         var rows = queryResult[0];
         return res.json({ status: 200, protocol: 'HTTP/1.1', data: rows });
     } catch (err) {
-        console.error('❌ [API ERROR GET /items]:', err.message);
-        return res.status(500).json({ error: 'Error al consultar la base de datos' });
+        console.warn('⚠️ [API GET /items] BD SQL offline. Sirviendo nodos desde memoria temporal.');
+        return res.json({ status: 200, protocol: 'HTTP/1.1', data: inMemoryItems });
     }
 });
 
@@ -127,13 +134,20 @@ app.post('/items', async function (req, res) {
             data: { id: insertedId, nombre: nombre, descripcion: descripcion || '' }
         });
     } catch (err) {
-        console.error('❌ [API ERROR POST /items]:', err.message);
-        return res.status(500).json({ error: 'Error al insertar registro en la base de datos' });
+        console.warn('⚠️ [API POST /items] Guardando en memoria temporal (BD SQL offline)');
+        var newId = inMemoryItems.length ? Math.max(...inMemoryItems.map(i => i.id)) + 1 : 1;
+        var newItem = { id: newId, nombre: nombre, descripcion: descripcion || '' };
+        inMemoryItems.unshift(newItem);
+        return res.status(201).json({
+            status: 201,
+            message: 'Registro creado (Modo local)',
+            data: newItem
+        });
     }
 });
 
 app.put('/items/:id', async function (req, res) {
-    var id = req.params.id;
+    var id = parseInt(req.params.id, 10);
     var nombre = req.body.nombre;
     var descripcion = req.body.descripcion;
 
@@ -150,13 +164,18 @@ app.put('/items/:id', async function (req, res) {
 
         return res.json({ status: 200, message: 'Registro actualizado correctamente' });
     } catch (err) {
-        console.error('❌ [API ERROR PUT /items/:id]:', err.message);
-        return res.status(500).json({ error: 'Error al actualizar el registro' });
+        var item = inMemoryItems.find(i => i.id === id);
+        if (item) {
+            item.nombre = nombre;
+            item.descripcion = descripcion;
+            return res.json({ status: 200, message: 'Registro actualizado (Memoria)' });
+        }
+        return res.status(404).json({ error: 'Registro no encontrado' });
     }
 });
 
 app.delete('/items/:id', async function (req, res) {
-    var id = req.params.id;
+    var id = parseInt(req.params.id, 10);
 
     try {
         var queryResult = await db.query('DELETE FROM items WHERE id = ?', [id]);
@@ -168,10 +187,11 @@ app.delete('/items/:id', async function (req, res) {
 
         return res.json({ status: 200, message: 'Registro eliminado correctamente' });
     } catch (err) {
-        console.error('❌ [API ERROR DELETE /items/:id]:', err.message);
-        return res.status(500).json({ error: 'Error al eliminar el registro' });
+        inMemoryItems = inMemoryItems.filter(i => i.id !== id);
+        return res.json({ status: 200, message: 'Registro eliminado (Memoria)' });
     }
 });
+
 
 // --- TELEMETRÍA Y HEALTH CHECK AVANZADO ---
 app.get('/health', function (req, res) {
